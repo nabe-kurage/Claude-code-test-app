@@ -1,70 +1,76 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、Claude Code（[claude.ai/code](https://claude.ai/code)）がこのリポジトリ内のコードを扱う際のガイドとして機能します。
 
-## Project Overview
+## プロジェクト概要
 
-This is a simple emoji search web application that converts text descriptions to corresponding emojis. Users input descriptive words like "悲しい" (sad), "お祝い" (celebration), "眠い" (sleepy) and get matching emojis in return.
+これは、テキストによる説明を対応する絵文字に変換するシンプルな絵文字検索 Web アプリケーションです。
+ユーザーは「悲しい」「お祝い」「眠い」といった日本語の説明語を入力し、該当する絵文字が返ってきます。
 
-## Tech Stack
+## 技術スタック
 
-- **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
-- **Architecture**: Client-side only, no backend required
-- **Deployment**: Static files that can be served from any web server
+- **フロントエンド**：純粋な HTML/CSS/JavaScript（フレームワークなし）
+- **アーキテクチャ**：クライアントサイドのみで完結、バックエンド不要
+- **デプロイ方法**：どんな Web サーバーでも配信可能な静的ファイル構成
 
-## File Structure
+## ファイル構成
 
 ```
-├── index.html      # Main HTML file with UI structure
-├── style.css       # Styling and responsive design
-├── app.js          # JavaScript logic and emoji dictionary
-└── CLAUDE.md       # This documentation file
+├── index.html      # UI構成を持つメインHTMLファイル
+├── style.css       # スタイリングとレスポンシブデザイン
+├── app.js          # JavaScriptのロジックと絵文字辞書
+└── CLAUDE.md       # 本ドキュメントファイル
 ```
 
-## Development Commands
+## 開発コマンド
 
-### Running the Application
+### アプリケーションの実行
+
 ```bash
-# Open directly in browser
+# ブラウザで直接開く
 open index.html
 
-# Or serve with a simple HTTP server
+# または簡易HTTPサーバーで起動
 python3 -m http.server 8000
-# Then visit http://localhost:8000
+# その後 http://localhost:8000 にアクセス
 ```
 
-### Testing
-- Manual testing by opening index.html in a web browser
-- Test various keyword combinations (single and multiple words)
-- Verify responsive design on different screen sizes
+### テスト方法
 
-## Architecture Details
+- `index.html` を Web ブラウザで開いて手動でテスト
+- 単語・複数単語の組み合わせで動作確認
+- 異なる画面サイズでレスポンシブデザインを確認
 
-### Core Components
+## アーキテクチャ詳細
 
-1. **Emoji Dictionary** (`app.js`): 
-   - Comprehensive mapping of Japanese keywords to emoji
-   - Categories: emotions, weather, animals, food, nature, events, actions, buildings, transportation, occupations, body parts, objects, time, colors, symbols
-   - ~880+ keyword mappings with fallback handling
+### コア構成要素
 
-2. **Search Logic**:
-   - Space-separated keyword processing
-   - Each keyword maps to corresponding emoji
-   - Unknown keywords return fallback emoji (❓🤔)
+1. **絵文字辞書（`app.js`）**
 
-3. **UI Features**:
-   - Real-time search with Enter key support
-   - Loading animation for user feedback
-   - Responsive design for mobile and desktop
-   - Clean, modern interface with gradient styling
+   - 日本語キーワードと絵文字の網羅的なマッピング
+   - カテゴリー：感情、天気、動物、食べ物、自然、イベント、動作、建物、交通手段、職業、体の部位、物、時間、色、記号
+   - 約 880 語以上のマッピングに対応し、未知語はフォールバック絵文字に切り替え
 
-### Key Functions
+2. **検索ロジック**
 
-- `searchEmojis(inputText)`: Core search logic in app.js:158
-- `performSearch()`: UI update handler in app.js:169
-- Event listeners for button clicks and keyboard input
+   - スペース区切りでキーワードを処理
+   - 各キーワードを絵文字に変換
+   - 未知の単語には `❓🤔` を返す
 
-## Configuration
+3. **UI 機能**
 
-- Claude Code settings: `.claude/settings.local.json`
-- No external dependencies or build process required
+   - Enter キーで即時検索
+   - ユーザー操作時のローディングアニメーション
+   - モバイル・デスクトップ両対応のレスポンシブデザイン
+   - グラデーションスタイルを用いたクリーンでモダンなインターフェース
+
+### 主要関数
+
+- `searchEmojis(inputText)`：検索ロジックの中心（`app.js:158`）
+- `performSearch()`：UI 更新処理（`app.js:169`）
+- ボタンクリック・キーボード入力のイベントリスナーあり
+
+## 設定
+
+- Claude Code の設定ファイル：`.claude/settings.local.json`
+- 外部依存やビルドプロセスは不要
