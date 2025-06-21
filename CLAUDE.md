@@ -44,8 +44,8 @@ python3 -m http.server 8000
 
 1. **Emoji Dictionary** (`app.js`): 
    - Comprehensive mapping of Japanese keywords to emoji
-   - Categories: emotions, weather, animals, food, nature, sports, etc.
-   - ~100+ keyword mappings with fallback handling
+   - Categories: emotions, weather, animals, food, nature, events, actions, buildings, transportation, occupations, body parts, objects, time, colors, symbols
+   - ~880+ keyword mappings with fallback handling
 
 2. **Search Logic**:
    - Space-separated keyword processing
