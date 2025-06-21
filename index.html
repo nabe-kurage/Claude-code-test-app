@@ -30,6 +30,19 @@
                 <div id="result" class="result-display">
                     <!-- 検索結果の絵文字がここに表示される -->
                 </div>
+                <div class="action-buttons" id="actionButtons" style="display: none;">
+                    <button id="copyButton" class="action-btn copy-btn" title="絵文字をコピー">
+                        📋 コピー
+                    </button>
+                    <button id="shareButton" class="action-btn share-btn" title="シェアする">
+                        📤 シェア
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 成功通知 -->
+            <div id="notification" class="notification" style="display: none;">
+                <span id="notificationText"></span>
             </div>
         </main>
 

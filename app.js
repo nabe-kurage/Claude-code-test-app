@@ -281,6 +281,11 @@ const fallbackEmoji = '❓🤔';
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 const resultDisplay = document.getElementById('result');
+const actionButtons = document.getElementById('actionButtons');
+const copyButton = document.getElementById('copyButton');
+const shareButton = document.getElementById('shareButton');
+const notification = document.getElementById('notification');
+const notificationText = document.getElementById('notificationText');
 
 // 検索機能
 function searchEmojis(inputText) {
@@ -306,18 +311,25 @@ function performSearch() {
     
     if (!inputText.trim()) {
         resultDisplay.textContent = '';
+        hideActionButtons();
         return;
     }
     
     // ローディング表示
     resultDisplay.textContent = '検索中...';
     resultDisplay.className = 'result-display loading';
+    hideActionButtons();
     
     // 少し遅延を入れてローディング感を演出
     setTimeout(() => {
         const result = searchEmojis(inputText);
         resultDisplay.textContent = result;
         resultDisplay.className = 'result-display';
+        
+        // 結果がある場合はアクションボタンを表示
+        if (result) {
+            showActionButtons();
+        }
     }, 300);
 }
 
@@ -341,8 +353,211 @@ searchInput.addEventListener('input', function() {
     if (this.value === '') {
         resultDisplay.textContent = '';
         resultDisplay.className = 'result-display';
+        hideActionButtons();
     }
 });
+
+// === 新機能: コピー・シェア機能 ===
+
+// アクションボタンの表示/非表示
+function showActionButtons() {
+    actionButtons.style.display = 'flex';
+    setTimeout(() => {
+        actionButtons.classList.add('visible');
+    }, 50);
+}
+
+function hideActionButtons() {
+    actionButtons.classList.remove('visible');
+    setTimeout(() => {
+        actionButtons.style.display = 'none';
+    }, 300);
+}
+
+// 通知機能
+function showNotification(message, type = 'success') {
+    notificationText.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.style.display = 'block';
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 50);
+    
+    // 3秒後に自動で非表示
+    setTimeout(() => {
+        hideNotification();
+    }, 3000);
+}
+
+function hideNotification() {
+    notification.classList.remove('show');
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 300);
+}
+
+// コピー機能
+async function copyToClipboard() {
+    const text = resultDisplay.textContent;
+    
+    if (!text || text === '検索中...') {
+        showNotification('コピーできる絵文字がありません', 'error');
+        return;
+    }
+    
+    try {
+        // Clipboard API を試行
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            showNotification('絵文字をコピーしました! 📋');
+            
+            // ボタンアニメーション
+            copyButton.classList.add('clicked');
+            setTimeout(() => {
+                copyButton.classList.remove('clicked');
+            }, 300);
+            
+            // 一時的にボタンテキストを変更
+            const originalText = copyButton.innerHTML;
+            copyButton.innerHTML = '✅ コピー済み';
+            setTimeout(() => {
+                copyButton.innerHTML = originalText;
+            }, 2000);
+            
+        } else {
+            // フォールバック: 古いブラウザ対応
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            if (successful) {
+                showNotification('絵文字をコピーしました! 📋');
+            } else {
+                throw new Error('コピーに失敗しました');
+            }
+        }
+    } catch (error) {
+        console.error('コピーエラー:', error);
+        showNotification('コピーに失敗しました', 'error');
+    }
+}
+
+// シェア機能
+async function shareContent() {
+    const emojis = resultDisplay.textContent;
+    const inputText = searchInput.value;
+    
+    if (!emojis || emojis === '検索中...') {
+        showNotification('シェアできる絵文字がありません', 'error');
+        return;
+    }
+    
+    const shareText = `「${inputText}」→ ${emojis}`;
+    const shareUrl = window.location.href;
+    
+    try {
+        // Web Share API を試行（モバイル対応）
+        if (navigator.share) {
+            await navigator.share({
+                title: '絵文字検索アプリ',
+                text: shareText,
+                url: shareUrl
+            });
+            showNotification('シェアしました! 📤');
+            return;
+        }
+    } catch (error) {
+        console.log('Web Share API エラー:', error);
+    }
+    
+    // フォールバック: SNS個別シェア
+    showShareMenu();
+}
+
+// シェアメニューの表示
+function showShareMenu() {
+    const emojis = resultDisplay.textContent;
+    const inputText = searchInput.value;
+    const shareText = `「${inputText}」→ ${emojis}`;
+    const shareUrl = window.location.href;
+    
+    // シェアメニューがすでに存在する場合は削除
+    const existingMenu = document.querySelector('.share-menu');
+    if (existingMenu) {
+        existingMenu.remove();
+    }
+    
+    // シェアメニューを作成
+    const shareMenu = document.createElement('div');
+    shareMenu.className = 'share-menu';
+    shareMenu.innerHTML = `
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-option">
+            🐦 Twitter でシェア
+        </a>
+        <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}" target="_blank" class="share-option">
+            💚 LINE でシェア
+        </a>
+        <button class="share-option" onclick="copyShareText(\`${shareText.replace(/`/g, '\\`')}\`)">
+            📋 テキストをコピー
+        </button>
+    `;
+    
+    // シェアボタンの位置に追加
+    shareButton.style.position = 'relative';
+    shareButton.appendChild(shareMenu);
+    
+    // 表示アニメーション
+    setTimeout(() => {
+        shareMenu.classList.add('visible');
+    }, 10);
+    
+    // 3秒後に自動で非表示
+    setTimeout(() => {
+        if (shareMenu.parentNode) {
+            shareMenu.remove();
+        }
+    }, 5000);
+    
+    // 他の場所をクリックした時に非表示
+    document.addEventListener('click', function hideMenu(event) {
+        if (!shareButton.contains(event.target)) {
+            if (shareMenu.parentNode) {
+                shareMenu.remove();
+            }
+            document.removeEventListener('click', hideMenu);
+        }
+    });
+}
+
+// シェアテキストのコピー
+async function copyShareText(text) {
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+        } else {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+        showNotification('シェア用テキストをコピーしました! 📋');
+    } catch (error) {
+        showNotification('コピーに失敗しました', 'error');
+    }
+}
+
+// イベントリスナーの追加
+copyButton.addEventListener('click', copyToClipboard);
+shareButton.addEventListener('click', shareContent);
+
+// グローバル関数として公開（onclick で使用するため）
+window.copyShareText = copyShareText;
 
 // デバッグ用（開発時のみ）
 console.log('絵文字検索アプリが読み込まれました');
