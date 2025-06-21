@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>絵文字検索アプリ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 絵文字検索アプリ</h1>
+            <p>文字によるイメージを入力すると、ぴったりの絵文字を表示します</p>
+        </header>
+
+        <main>
+            <div class="search-section">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="例: 悲しい お祝い 眠い"
+                        autocomplete="off"
+                    >
+                    <button id="searchButton">絵文字を適用</button>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <div id="result" class="result-display">
+                    <!-- 検索結果の絵文字がここに表示される -->
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>複数のキーワードをスペースで区切って入力できます</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

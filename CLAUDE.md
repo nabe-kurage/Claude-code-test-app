@@ -2,27 +2,69 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Repository Status
+## Project Overview
 
-This is a fresh repository with no initial commits or source code yet. The project structure and development commands will be documented here as the codebase develops.
+This is a simple emoji search web application that converts text descriptions to corresponding emojis. Users input descriptive words like "悲しい" (sad), "お祝い" (celebration), "眠い" (sleepy) and get matching emojis in return.
+
+## Tech Stack
+
+- **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
+- **Architecture**: Client-side only, no backend required
+- **Deployment**: Static files that can be served from any web server
+
+## File Structure
+
+```
+├── index.html      # Main HTML file with UI structure
+├── style.css       # Styling and responsive design
+├── app.js          # JavaScript logic and emoji dictionary
+└── CLAUDE.md       # This documentation file
+```
 
 ## Development Commands
 
-*To be updated once the project structure is established*
+### Running the Application
+```bash
+# Open directly in browser
+open index.html
 
-Common commands will be documented here such as:
-- Build commands
-- Test commands  
-- Lint/formatting commands
-- Development server commands
+# Or serve with a simple HTTP server
+python3 -m http.server 8000
+# Then visit http://localhost:8000
+```
 
-## Architecture Overview
+### Testing
+- Manual testing by opening index.html in a web browser
+- Test various keyword combinations (single and multiple words)
+- Verify responsive design on different screen sizes
 
-*To be updated as the codebase structure emerges*
+## Architecture Details
 
-This section will document the high-level architecture, key patterns, and important structural decisions once development begins.
+### Core Components
+
+1. **Emoji Dictionary** (`app.js`): 
+   - Comprehensive mapping of Japanese keywords to emoji
+   - Categories: emotions, weather, animals, food, nature, sports, etc.
+   - ~100+ keyword mappings with fallback handling
+
+2. **Search Logic**:
+   - Space-separated keyword processing
+   - Each keyword maps to corresponding emoji
+   - Unknown keywords return fallback emoji (❓🤔)
+
+3. **UI Features**:
+   - Real-time search with Enter key support
+   - Loading animation for user feedback
+   - Responsive design for mobile and desktop
+   - Clean, modern interface with gradient styling
+
+### Key Functions
+
+- `searchEmojis(inputText)`: Core search logic in app.js:158
+- `performSearch()`: UI update handler in app.js:169
+- Event listeners for button clicks and keyboard input
 
 ## Configuration
 
-- Claude Code settings are configured in `.claude/settings.local.json`
-- Current permissions allow basic file system operations
+- Claude Code settings: `.claude/settings.local.json`
+- No external dependencies or build process required
