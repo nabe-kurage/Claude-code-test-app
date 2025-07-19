@@ -90,13 +90,15 @@ describe('ShareManager', () => {
     test('シェアボタンが存在しない場合のエラーハンドリング', () => {
       document.body.innerHTML = '';
       
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = mockConsoleError();
       
       expect(() => {
         shareManager.showShareMenu('テスト', 'https://example.com');
       }).not.toThrow();
       
       expect(consoleSpy).toHaveBeenCalledWith('シェアボタンが見つかりません');
+      
+      restoreConsoleError(consoleSpy);
     });
   });
 
@@ -105,15 +107,34 @@ describe('ShareManager', () => {
       const shareMenu = shareManager.createShareMenu('「嬉しい」→ 😊', 'https://example.com');
       
       expect(shareMenu.className).toBe('share-menu');
-      expect(shareMenu.innerHTML).toContain('twitter.com/intent/tweet');
-      expect(shareMenu.innerHTML).toContain('social-plugins.line.me');
-      expect(shareMenu.innerHTML).toContain('copyShareText');
+      
+      // Twitter リンクの確認
+      const twitterLink = shareMenu.querySelector('a[href*="twitter.com"]');
+      expect(twitterLink).toBeTruthy();
+      expect(twitterLink.textContent).toBe('🐦 Twitter でシェア');
+      
+      // LINE リンクの確認
+      const lineLink = shareMenu.querySelector('a[href*="social-plugins.line.me"]');
+      expect(lineLink).toBeTruthy();
+      expect(lineLink.textContent).toBe('💚 LINE でシェア');
+      
+      // コピーボタンの確認
+      const copyButton = shareMenu.querySelector('button');
+      expect(copyButton).toBeTruthy();
+      expect(copyButton.textContent).toBe('📋 テキストをコピー');
     });
 
-    test('特殊文字のエスケープ処理', () => {
-      const shareMenu = shareManager.createShareMenu('テスト`バック', 'https://example.com');
+    test('コピーボタンのイベントリスナー', () => {
+      const copyShareTextSpy = jest.spyOn(shareManager, 'copyShareText').mockImplementation(() => {});
       
-      expect(shareMenu.innerHTML).toContain('テスト\\`バック');
+      const shareMenu = shareManager.createShareMenu('テストテキスト', 'https://example.com');
+      const copyButton = shareMenu.querySelector('button');
+      
+      copyButton.click();
+      
+      expect(copyShareTextSpy).toHaveBeenCalledWith('テストテキスト');
+      
+      copyShareTextSpy.mockRestore();
     });
   });
 

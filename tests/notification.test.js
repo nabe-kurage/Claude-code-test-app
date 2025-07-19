@@ -83,13 +83,15 @@ describe('NotificationManager', () => {
       notificationManager.notification = null;
       notificationManager.notificationText = null;
       
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = mockConsoleError();
       
       expect(() => {
         notificationManager.show('テスト');
       }).not.toThrow();
       
       expect(consoleSpy).toHaveBeenCalledWith('通知要素が利用できません');
+      
+      restoreConsoleError(consoleSpy);
     });
   });
 

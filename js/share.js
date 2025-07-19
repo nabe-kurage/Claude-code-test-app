@@ -91,20 +91,32 @@ export class ShareManager {
         const shareMenu = document.createElement('div');
         shareMenu.className = 'share-menu';
         
-        // エスケープ処理
-        const escapedText = shareText.replace(/`/g, '\\`');
+        // Twitter シェアリンク
+        const twitterLink = document.createElement('a');
+        twitterLink.href = this.getTwitterShareUrl(shareText, shareUrl);
+        twitterLink.target = '_blank';
+        twitterLink.className = 'share-option';
+        twitterLink.textContent = '🐦 Twitter でシェア';
         
-        shareMenu.innerHTML = `
-            <a href="${this.getTwitterShareUrl(shareText, shareUrl)}" target="_blank" class="share-option">
-                🐦 Twitter でシェア
-            </a>
-            <a href="${this.getLineShareUrl(shareText, shareUrl)}" target="_blank" class="share-option">
-                💚 LINE でシェア
-            </a>
-            <button class="share-option" onclick="window.shareManager.copyShareText('${escapedText}')">
-                📋 テキストをコピー
-            </button>
-        `;
+        // LINE シェアリンク
+        const lineLink = document.createElement('a');
+        lineLink.href = this.getLineShareUrl(shareText, shareUrl);
+        lineLink.target = '_blank';
+        lineLink.className = 'share-option';
+        lineLink.textContent = '💚 LINE でシェア';
+        
+        // コピーボタン
+        const copyButton = document.createElement('button');
+        copyButton.className = 'share-option';
+        copyButton.textContent = '📋 テキストをコピー';
+        copyButton.addEventListener('click', () => {
+            this.copyShareText(shareText);
+        });
+        
+        // 要素を追加
+        shareMenu.appendChild(twitterLink);
+        shareMenu.appendChild(lineLink);
+        shareMenu.appendChild(copyButton);
         
         return shareMenu;
     }

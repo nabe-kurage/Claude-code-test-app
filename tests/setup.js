@@ -19,6 +19,17 @@ afterAll(() => {
   console.error.mockRestore();
 });
 
+// 共通のテストヘルパー関数
+global.mockConsoleError = () => {
+  return jest.spyOn(console, 'error').mockImplementation(() => {});
+};
+
+global.restoreConsoleError = (spy) => {
+  if (spy) {
+    spy.mockRestore();
+  }
+};
+
 // Clipboard API のモック
 Object.assign(navigator, {
   clipboard: {

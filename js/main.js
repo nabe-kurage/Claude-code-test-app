@@ -45,11 +45,14 @@ class EmojiSearchApp {
     }
 
     /**
-     * グローバルオブジェクトを設定（onclick属性などで使用）
+     * グローバルオブジェクトを設定（デバッグ用）
      */
     setupGlobalObjects() {
-        window.shareManager = this.shareManager;
-        window.emojiSearchApp = this;
+        // デバッグ用の機能
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            window.debugApp = this;
+            window.shareManager = this.shareManager; // 後方互換性のため保持
+        }
     }
 
     /**
