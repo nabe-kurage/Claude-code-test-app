@@ -1,0 +1,64 @@
+{
+  "name": "emoji-search-app",
+  "version": "1.1.0",
+  "description": "日本語テキストから絵文字を検索する Web アプリケーション",
+  "main": "js/main.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "python3 -m http.server 8000",
+    "lint": "eslint js/**/*.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "emoji",
+    "search",
+    "japanese",
+    "web-app"
+  ],
+  "author": "Claude Code",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "eslint": "^8.56.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "babel-jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleNameMapping": {
+      "^@/(.*)$": "<rootDir>/js/$1"
+    },
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/main.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js",
+      "**/tests/**/*.spec.js"
+    ],
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+  },
+  "babel": {
+    "presets": [
+      ["@babel/preset-env", {
+        "targets": {
+          "node": "current"
+        }
+      }]
+    ]
+  }
+}
