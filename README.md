@@ -17,6 +17,8 @@ URL: https://emojifinder-pi.vercel.app/
 
 - 🇯🇵 **日本語キーワード対応**: 感情、動物、食べ物、天気など幅広いカテゴリに対応
 - 🔄 **複数キーワード処理**: スペース区切りで複数のキーワードを同時に変換
+- 📋 **ワンクリックコピー**: 検索結果の絵文字をクリップボードに簡単コピー
+- 📤 **ソーシャルシェア**: Twitter・LINE・Web Share APIでの共有機能
 - 📱 **レスポンシブデザイン**: PC・スマートフォン両対応
 - ⚡ **軽量**: フレームワークなし、純粋な HTML/CSS/JavaScript
 
@@ -48,9 +50,13 @@ python3 -m http.server 8000
 
 ## 📖 使用方法 (Usage)
 
+### 基本的な使い方
+
 1. テキストフォームに日本語のキーワードを入力
 2. 「絵文字を適用」ボタンをクリック（または Enter キー）
 3. 対応する絵文字が表示されます
+4. **📋 コピーボタン**: 絵文字をクリップボードにコピー
+5. **📤 シェアボタン**: SNSや他のアプリで共有
 
 ### 入力例
 
@@ -68,6 +74,20 @@ python3 -m http.server 8000
 入力: 寿司 ラーメン ケーキ
 出力: 🍣 🍜 🍰
 ```
+
+### 新機能: コピー・シェア機能
+
+#### 📋 コピー機能
+- 検索結果の絵文字をワンクリックでコピー
+- 成功時に通知とボタンアニメーション
+- すべてのモダンブラウザに対応
+
+#### 📤 シェア機能
+- **モバイル**: ネイティブシェア機能（Web Share API）
+- **PC**: 個別SNSシェア
+  - 🐦 Twitter でシェア
+  - 💚 LINE でシェア  
+  - 📋 シェア用テキストをコピー
 
 ### 複数キーワードの使い方
 
@@ -106,6 +126,18 @@ python3 -m http.server 8000
 - 🟡 **色系**: 基本的な色彩
 - ✨ **記号・その他**: マーク、記号類
 
+### 方法 3: npm を使用した開発サーバー
+
+```bash
+# 依存関係をインストール
+npm install
+
+# 開発サーバーを起動
+npm run start
+# または
+npm run serve
+```
+
 ## 📁 フォルダ構成
 
 ```
@@ -114,44 +146,157 @@ Claude-code-test-app/
 ├── CLAUDE.md          # Claude Code用のドキュメント
 ├── index.html         # メインのHTMLファイル
 ├── style.css          # スタイルシート
-├── app.js             # JavaScript（絵文字辞書と機能）
+├── package.json       # npm設定とスクリプト
+├── js/                # モジュール化されたJavaScript
+│   ├── main.js        # メインエントリーポイント
+│   ├── searchEngine.js      # 検索エンジン
+│   ├── uiManager.js         # UI制御
+│   ├── clipboard.js         # クリップボード操作
+│   ├── share.js             # シェア機能
+│   ├── notification.js      # 通知システム
+│   └── emojiDictionary.js   # 絵文字辞書データ
+├── tests/             # テストファイル
+│   ├── setup.js       # テスト環境設定
+│   ├── searchEngine.test.js # 検索エンジンのテスト
+│   ├── uiManager.test.js    # UI管理のテスト
+│   ├── clipboard.test.js    # クリップボードのテスト
+│   ├── share.test.js        # シェア機能のテスト
+│   ├── notification.test.js # 通知システムのテスト
+│   └── integration.test.js  # 統合テスト
 └── images/            # 画像フォルダ
+    └── screenshot.png
 ```
 
 ## 🛠️ 技術仕様
 
-- **フロントエンド**: HTML5, CSS3, JavaScript (ES6)
-- **アーキテクチャ**: クライアントサイドのみ（バックエンド不要）
+- **フロントエンド**: HTML5, CSS3, JavaScript (ES6 Modules)
+- **アーキテクチャ**: モジュラー設計、クライアントサイドのみ（バックエンド不要）
+- **テスト**: Jest + jsdom
+- **API**: Clipboard API、Web Share API
 - **レスポンシブ**: モバイルファーストデザイン
-- **ブラウザサポート**: モダンブラウザ全般
+- **ブラウザサポート**: モダンブラウザ全般（フォールバック対応あり）
+
+### 使用している Web API
+
+- **Clipboard API**: 絵文字のクリップボードコピー
+- **Web Share API**: モバイルデバイスでのネイティブシェア
+- **フォールバック対応**: 古いブラウザでも基本機能が利用可能
+
+## 🧪 テスト
+
+### テストの実行
+
+```bash
+# 全テストを実行
+npm test
+
+# ウォッチモードでテスト実行
+npm run test:watch
+
+# カバレッジレポート付きでテスト実行
+npm run test:coverage
+```
+
+### テストカバレッジ
+
+- **SearchEngine**: キーワード検索、辞書操作
+- **UIManager**: DOM操作、イベント処理
+- **ClipboardManager**: コピー機能、フォールバック
+- **ShareManager**: シェア機能、SNS連携
+- **NotificationManager**: 通知システム
+- **統合テスト**: モジュール間の連携テスト
 
 ## 📝 開発者向け情報
 
-### コアファイル
+### アーキテクチャ
 
-- `app.js`: メインの絵文字辞書と検索ロジック
-- `style.css`: UI/UX デザインとアニメーション
-- `index.html`: アプリケーションの構造
+#### モジュール構成
+- **SearchEngine**: 絵文字検索の核となるロジック
+- **UIManager**: DOM操作とユーザーインターフェース制御
+- **ClipboardManager**: クリップボード操作（Clipboard API + フォールバック）
+- **ShareManager**: シェア機能（Web Share API + SNSシェア）
+- **NotificationManager**: 通知システム
+- **EmojiSearchApp**: 全モジュールを統合するメインクラス
 
-### 主要な関数
+#### 設計原則
+- **単一責任**: 各モジュールが明確な責任を持つ
+- **疎結合**: モジュール間の依存関係を最小化
+- **再利用性**: 各クラスが独立して利用可能
+- **テスタビリティ**: ユニットテストが容易な設計
 
+### 主要なクラスとメソッド
+
+#### SearchEngine
 - `searchEmojis(inputText)`: キーワード検索のコア処理
-- `performSearch()`: UI 更新とユーザーインタラクション処理
+- `getDictionarySize()`: 辞書サイズの取得
+- `hasKeyword(keyword)`: キーワード存在チェック
+- `findSimilarKeywords(partialKeyword)`: 部分一致検索
+
+#### UIManager
+- `displayResult(result)`: 検索結果の表示
+- `showLoading()`: ローディング状態の表示
+- `showActionButtons()`: アクションボタンの表示制御
+
+#### ClipboardManager
+- `copyToClipboard(text)`: クリップボードコピー（フォールバック付き）
+- `isClipboardSupported()`: Clipboard API対応チェック
+
+#### ShareManager
+- `shareContent(emojis, inputText)`: シェア機能の実行
+- `showShareMenu()`: SNSシェアメニューの表示
+
+#### NotificationManager
+- `show(message, type)`: 通知の表示
+- `showSuccess(message)`: 成功通知
+- `showError(message)`: エラー通知
 
 ### カスタマイズ
 
-新しいキーワードを追加するには、`app.js`の`emojiDictionary`オブジェクトに以下の形式で追加してください：
+新しいキーワードを追加するには、`js/emojiDictionary.js`の`emojiDictionary`オブジェクトに以下の形式で追加してください：
 
 ```javascript
-const emojiDictionary = {
+export const emojiDictionary = {
   // 既存のマッピング...
   新しいキーワード: "🆕",
   // ...
 };
 ```
 
+### 開発スクリプト
+
+```bash
+# コードの品質チェック
+npm run lint
+
+# 開発サーバーを起動
+npm run start
+
+# テスト実行
+npm test
+```
+
+## 🆕 更新履歴
+
+### v1.2.0 (2024年XX月XX日)
+- 🏗️ **リファクタリング**: コードをモジュール化してファイル分割
+- 🧪 **テスト**: Jest による包括的なテストを追加
+- 📊 **パフォーマンス**: 最適化されたコードとメモリ管理
+- 🔧 **開発体験**: ESLint、自動テスト、開発サーバー
+- 📚 **ドキュメント**: アーキテクチャドキュメントの充実
+
+### v1.1.0 (2024年6月21日)
+- ✨ **新機能**: ワンクリックコピー機能を追加
+- ✨ **新機能**: ソーシャルシェア機能を追加（Twitter・LINE対応）
+- 🎨 **UI改善**: アクションボタンとアニメーション効果
+- 📱 **UX向上**: 成功通知システムとフィードバック
+
+### v1.0.0 (2024年6月21日)
+- 🚀 初回リリース
+- 📚 880以上のキーワード辞書
+- 🔍 基本的な絵文字検索機能
+
 ---
 
-**最終更新**: 2024 年 6 月 21 日  
-**バージョン**: v1.0.0  
+**最終更新**: 2024 年 7 月 19 日  
+**バージョン**: v1.2.0  
 **キーワード数**: 880 以上
